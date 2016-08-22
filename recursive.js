@@ -50,11 +50,51 @@ const binarySearch = (a, item, comparer=defaultComparer) => {
   }
 }
 
+// (a: any[], pivot: number, fn: (a, b) => boolean) => any[]
+//
+// w/reduce
+//
+// a.reduce((acc, curr) => fn(curr) ? acc.push([curr]) : acc, [])
+const partition = (a, pivot, fn) => {
+  let result = []
+  for (let i = 0; i < a.length; i++) {
+    if (i !== pivot && fn(a[i])) {
+      result.push(a[i])
+    }
+  }
+  return result
+}
+
+// (a: any[], comparer: (a: any, b: any) => number) => any[]
+const quicksort = (a, comparer=defaultComparer) => {
+  if (a.length === 0) {
+    return []
+  } else if (a.length === 1) {
+    return a
+  } else {
+    const pivot = Math.floor(a.length/2)
+    const partitionLeft = partition(a, pivot, (x) => comparer(x, a[pivot]) <= 0)
+    const partitionRight = partition(a, pivot, (x) => comparer(x, a[pivot]) > 0)
+    return quicksort(partitionLeft, comparer)
+      .concat([a[pivot]])
+      .concat(quicksort(partitionRight, comparer))
+  }
+}
+
+// (s: string) => boolean
+const isPalindrome = (s) => (
+  s.length === 0 ||
+  s.length === 1 ||
+  s[0] === s[s.length-1] && isPalindrome(s.slice(1, s.length-1))
+)
+
 module.exports = {
   factorial,
   sum,
   count,
   max,
   min,
-  binarySearch
+  binarySearch,
+  quicksort,
+  isPalindrome
 }

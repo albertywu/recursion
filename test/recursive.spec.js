@@ -4,12 +4,25 @@ const {
   count,
   max,
   min,
-  binarySearch
+  binarySearch,
+  quicksort,
+  isPalindrome
 } = require('../recursive')
 
 const expect = require('expect')
 
 const runTests = (tests, fn) => tests.forEach(([input, output]) => expect(fn(input)).toBe(output))
+
+class Person {
+  constructor(name, age) {
+    this.name = name
+    this.age = age
+  }
+
+  static compareAges(a, b) {
+    return a.age - b.age
+  }
+}
 
 /* --- */
 
@@ -86,17 +99,6 @@ describe('recursive', function() {
 
   it('#binarySearch w/custom comparator', function() {
 
-    class Person {
-      constructor(name, age) {
-        this.name = name
-        this.age = age
-      }
-
-      static compareAges(a, b) {
-        return a.age - b.age
-      }
-    }
-
     const tests = [
       [
         [
@@ -143,5 +145,57 @@ describe('recursive', function() {
         binarySearch(array, item, comparator)
       ).toBe(resultIndex)
     })
+  })
+
+  it('#quicksort', function() {
+    const tests = [
+      [[3,2,1,0], [0,1,2,3]],
+      [[3,2,1,2,3,0], [0,1,2,2,3,3]],
+      [[-3,-2,-1,0,-2,1,-3], [-3,-3,-2,-2,-1,0,1]],
+    ]
+
+    tests.forEach(([input, output]) => {
+      expect(
+        quicksort(input)
+      ).toEqual(output)
+    })
+  })
+
+  it('#quicksort w/custom comparator', function() {
+
+    const p1 = new Person('Bob', 24)
+    const p2 = new Person('Steve', 32)
+    const p3 = new Person('Albert', 15)
+
+    const tests = [
+      [
+        [p1, p2, p3],
+        [p3, p1, p2]
+      ]
+    ]
+
+    tests.forEach(([input, output]) => {
+      expect(
+        quicksort(input, Person.compareAges)
+      ).toEqual(output)
+    })
+  })
+
+  it('#isPalindrome', function() {
+
+    const tests = [
+      ['foo', false],
+      ['f', true],
+      ['fof', true],
+      ['foof', true],
+      ['', true]
+    ]
+
+    tests.forEach(([input, output]) => {
+      expect(
+        isPalindrome(input)
+      ).toBe(output)
+    })
+
   })
 })
